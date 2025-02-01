@@ -3,15 +3,18 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
+		<title><%= title%></title>
 		<link rel="stylesheet" href="/styles.css">
 	</head>
 	<body>
-		<%- include('navbar',{links}) %>
-		<h1><%=/*Note: This can be accessed as locals.message or message */ message %></h1>
+		<h1><%= title%></h1>
 		<ul>
-			<% users.forEach((user)=>{ %>
-				<%- include('users',{user}) %>
+			<% messages.forEach((message)=>{ %>
+				<li style="border:1px solid black;">
+					<h2><%=message.user  %></h2>
+					<h3><%= message.text%></h3>
+					<h3><%= message.added %></h3>
+				</li>
 			<% }); %>
 		</ul>
 	</body>
