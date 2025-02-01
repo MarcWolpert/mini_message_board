@@ -2,20 +2,25 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title><%= title%></title>
-		<link rel="stylesheet" href="/styles.css">
-	</head>
-	<body>
-		<h1><%= title%></h1>
-		<ul>
-			<% messages.forEach((message)=>{ %>
-				<li style="border:1px solid black;">
-					<h2><%=message.user  %></h2>
-					<h3><%= message.text%></h3>
-					<h3><%= message.added %></h3>
-				</li>
-			<% }); %>
-		</ul>
-	</body>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<title><%= title %></title>
+</head>
+<body>
+  <h1><%= title %></h1>
+  <ul>
+    <!-- If there are users then it will show all users -->
+    <% if (locals.users) {%>
+      <% users.forEach(user => { %>
+        <li>
+          ID: <%= user.id %>, Name: <%= user.firstName %> <%= user.lastName %>
+        </li>
+      <% }); %>
+    <% } %>
+  </ul>
+  <!-- Link to the user creation page handled by usersRouter -->
+  <a href="/create">Create a user</a>
+</body>
 </html>
