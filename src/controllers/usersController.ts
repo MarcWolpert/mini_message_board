@@ -116,3 +116,17 @@ export const usersDeletePost = (req: Request, res: Response) => {
 	usersStorage.deleteUser(req.params.id);
 	res.redirect('/');
 };
+
+// usersRouter.get('/search', usersSearchGet);
+export const usersSearchGet = (req: Request, res: Response) => {
+	res.render('searchUser', { title: 'Search' });
+};
+// usersRouter.post('/search', usersSearchPost);
+export const usersSearchPost = (req: Request, res: Response) => {
+	const resId: null | Object = usersStorage.search(
+		req.params?.firstName,
+		req.params?.lastName,
+		req.params?.email,
+	);
+	console.log(resId);
+};

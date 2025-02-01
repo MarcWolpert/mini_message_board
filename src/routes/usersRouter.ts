@@ -7,6 +7,8 @@ import {
 	usersDeletePost,
 	usersUpdateGet,
 	usersUpdatePost,
+	usersSearchGet,
+	usersSearchPost,
 } from '../controllers/usersController';
 
 //perform router on the subdirectory /users
@@ -17,3 +19,5 @@ usersRouter.post('/create', ...usersCreatePost);
 usersRouter.get('/:id/update', usersUpdateGet);
 usersRouter.post('/:id/update', ...usersUpdatePost);
 usersRouter.post('/:id/delete', usersDeletePost);
+usersRouter.get('/search', usersSearchGet);
+usersRouter.post('/search', usersSearchPost);
