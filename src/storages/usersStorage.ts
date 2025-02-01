@@ -2,7 +2,7 @@
 // This class lets us simulate interacting with a database.
 class UsersStorage {
 	public storage: Object;
-	public id: number;
+	public id: any;
 	constructor() {
 		this.storage = {};
 		this.id = 0;
@@ -18,18 +18,18 @@ class UsersStorage {
 		return Object.values(this.storage);
 	}
 
-	getUser(id: number) {
+	getUser(id: string) {
 		return this.storage[id];
 	}
 
 	updateUser(
-		id: number,
+		id: string,
 		{ firstName, lastName }: { firstName: string; lastName: string },
 	) {
 		this.storage[id] = { id, firstName, lastName };
 	}
 
-	deleteUser(id: number) {
+	deleteUser(id: string) {
 		delete this.storage[id];
 	}
 }

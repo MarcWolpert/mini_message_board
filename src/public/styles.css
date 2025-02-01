@@ -2,8 +2,11 @@ body {
 	color: black;
 	background-color: white;
 	display: block;
+	min-width: 360px;
 }
-
+h1 {
+	text-align: center;
+}
 form {
 	display: flex;
 	flex-direction: column;
@@ -21,4 +24,11 @@ form {
 	input {
 		margin-bottom: 1rem;
 	}
+}
+a {
+	float: left;
+	/* position: absolute;
+	top: 0;
+	left: 0; */
+	margin: 1rem;
 }

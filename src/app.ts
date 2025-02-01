@@ -11,6 +11,7 @@ app.set('views', path.join(__dirname, '../src/views'));
 //to process strings sent back in req.body
 //extended true because it allows nested json
 app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(process.cwd(), 'src/public/')));
 app.use('/', usersRouter);
 
 const PORT = process.env.PORT || 3000;
