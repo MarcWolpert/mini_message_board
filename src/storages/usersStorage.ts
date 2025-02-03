@@ -4,6 +4,13 @@ interface IterableStorage {
 	[key: string]: any;
 	[Symbol.iterator](): Iterator<any>;
 }
+export interface userInfo {
+	firstName: string;
+	lastName: string;
+	id: number;
+	email: string;
+	bio?: string;
+}
 
 class UsersStorage {
 	public storage: IterableStorage;
@@ -35,8 +42,15 @@ class UsersStorage {
 			lastName: 'a',
 			email: 'a@a.com',
 		};
+		this.storage['1'] = {
+			id: 1,
+			firstName: 'b',
+			lastName: 'b',
+			email: 'b@b.com',
+		};
+
 		this.storage;
-		this.id = 0;
+		this.id = 2;
 	}
 
 	addUser({ firstName, lastName, email, age, bio }) {
@@ -57,19 +71,20 @@ class UsersStorage {
 		lastName: string | null,
 		email: string | null,
 	): Object | null {
-		for (const s of this.storage) {
-			if (s?.firstName === firstName && s?.lastName === lastName) {
-				const return_s = { ...s };
-				delete return_s[Symbol.iterator];
-				return Object.values(return_s);
-			}
-			if (s?.email === email) {
-				const return_s = { ...s };
-				delete return_s[Symbol.iterator];
-				return Object.values(return_s);
-			}
-		}
-		return null;
+		console.log(this.storage);
+		//TODO: DOESN'T SEARCH RIGHT
+		//gets all entries that arent the iterator
+		const users = Object.values(this.storage).filter(
+			(value) => typeof value === 'object',
+		);
+		const result = users.filter((user: userInfo) => {
+			return (
+				(user.firstName === firstName &&
+					user.lastName === lastName) ||
+				user.email === email
+			);
+		});
+		return result.length ? result : null;
 	}
 
 	updateUser(

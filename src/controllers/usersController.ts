@@ -2,6 +2,7 @@
 import usersStorage from '../storages/usersStorage';
 import { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
+import { userInfo } from '../storages/usersStorage';
 
 const alphaErr = 'must only contain letters.';
 const lengthErr = 'must be between 1 and 10 characters.';
@@ -19,7 +20,6 @@ const validateUser = [
 		.withMessage(`First name ${alphaErr}`)
 		.isLength({ min: 1, max: 10 })
 		.withMessage(`First name ${lengthErr}`),
-
 	body('lastName')
 		.trim()
 		.isAlpha()
@@ -44,6 +44,30 @@ const validateUser = [
 		.escape()
 		.isLength({ min: 0, max: 200 })
 		.withMessage(`Last name ${textAreaErr}`),
+];
+
+const validateSearch = [
+	body('firstName')
+		.trim()
+		.isAlpha()
+		.withMessage(`First name ${alphaErr}`)
+		.isLength({ min: 1, max: 10 })
+		.withMessage(`First name ${lengthErr}`),
+	body('lastName')
+		.trim()
+		.isAlpha()
+		.withMessage(`Last name ${alphaErr}`)
+		.isLength({ min: 1, max: 10 })
+		.withMessage(`Last name ${lengthErr}`),
+	//required must be formatted properly
+	body('email')
+		.not()
+		.isEmpty()
+		.withMessage(`Email ${emailReq}`)
+		.trim()
+		.isEmail()
+		.normalizeEmail()
+		.withMessage(`Email ${emailFormatErr}`),
 ];
 
 //renders the users list
@@ -121,12 +145,39 @@ export const usersDeletePost = (req: Request, res: Response) => {
 export const usersSearchGet = (req: Request, res: Response) => {
 	res.render('searchUser', { title: 'Search' });
 };
+
 // usersRouter.post('/search', usersSearchPost);
-export const usersSearchPost = (req: Request, res: Response) => {
-	const resId: null | Object = usersStorage.search(
-		req.params?.firstName,
-		req.params?.lastName,
-		req.params?.email,
-	);
-	console.log(resId);
+export const usersSearchPost = [
+	validateSearch,
+	(req: Request, res: Response) => {
+		//first+last name
+		const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			//have to update createUser to render these errors
+			return res.status(400).render('searchUser', {
+				title: 'searchUser',
+				//gets the validation errors
+				errors: errors.array(),
+			});
+		}
+		const resId: null | userInfo = usersStorage.search(
+			req.body?.firstName,
+			req.body?.lastName,
+			req.body?.email,
+		)[0];
+		if (resId) {
+			res.redirect(`/${resId.id}`);
+		} else {
+			res.redirect('/');
+		}
+	},
+];
+
+export const userFoundGet = (req: Request, res: Response) => {
+	console.log(req.params);
+	const user = usersStorage.getUser(req.params.id);
+	if (!user) {
+		return res.redirect('/');
+	}
+	res.render('singleUser', { title: 'Single User', user: user });
 };
