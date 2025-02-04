@@ -5,7 +5,8 @@
 	"scripts": {
 		"start:build": "tsc -w",
 		"start:run": "dotenv -- nodemon build/app.js",
-		"start": "concurrently \"npm run start:build\" \"npm run start:run\""
+		"start": "concurrently \"npm run start:build\" \"npm run start:run\"",
+		"debug": "concurrently \"npm run start:build\" \"dotenv --nodemon --inspect build/app.js\""
 	},
 	"dependencies": {
 		"@types/express": "^5.0.0",

@@ -37,7 +37,8 @@ testConnection();
 export interface userInfo {
 	firstname: string;
 	lastname: string;
-	id: number;
+	age: number;
 	email: string;
 	bio?: string;
+	id?: number;
 }
