@@ -1,22 +1,49 @@
 // app.js
-import { usersRouter } from './routes/usersRouter';
-import express from 'express';
 import path from 'path';
-import { pool } from './db/pool.js';
+import { Pool } from 'pg';
+import express, { Request, Response } from 'express';
+import session from 'express-session';
+import passport from 'passport';
+import { Strategy as LocalStrategy } from 'passport-local';
+import 'dotenv/config';
 
-//it was pruning pool because it wasn't
-// being used when i used the start script
-console.log(pool);
+const pool = new Pool({
+	host: process.env.HOST,
+	user: process.env.USER,
+	max: 20,
+	port: parseInt(process.env.DB_PORT),
+	database: process.env.DATABASE,
+	password: process.env.PASSWORD,
+});
+
 const app = express();
 
 app.set('view engine', 'ejs');
-//had to add this because build folder couldn't see views
 app.set('views', path.join(__dirname, '../src/views'));
-//to process strings sent back in req.body
-//extended true because it allows nested json
-app.use(express.urlencoded({ extended: true }));
+
+//here we will use a session secret for security
+app.use(session({ secret: 'cats', resave: false, saveUninitialized: false }));
+app.use(passport.session());
+//disable nested objects
+app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(process.cwd(), 'src/public/')));
-app.use('/', usersRouter);
+app.use('/sign-up', (req: Request, res: Response) => {
+	res.render('sign-up', { title: 'Sign Up' });
+});
+app.post('/sign-up', async (req, res, next) => {
+	try {
+		await pool.query(
+			'INSERT INTO users (username, password) VALUES ($1, $2)',
+			[req.body.username, req.body.password],
+		);
+		res.redirect('/');
+	} catch (err) {
+		return next(err);
+	}
+});
+app.use('/', (req: Request, res: Response) => {
+	res.render('index', { title: 'Homepage' });
+});
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Express app listening on port ${PORT}!`));
